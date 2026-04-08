@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <title>University of Oregon Mapping</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <!--    Include the reference to the Mapbox JavaScript here in the <head> of the page    -->
+      <script src="https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.js"></script>
+    <!--    Include the reference to the Mapbox CSS here in the <head> of the page    -->
+      <link href="https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.css" rel="stylesheet">
+    <style>
+        /* Insert the CSS code here between the <style> tags */
+        body { margin:0; padding:0; }
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+#banner {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    z-index: 9999;
+    background-color white;
+    opacity: 0.8;
+    text-align: center;
+    pointer-events: none;
+    padding: 10px;
+}
+    #banner h1 {
+  font-family: "Century Gothic", Arial, sans-serif;
+  color: #FFD700;
+  font-size: 90px;
+  text-shadow: 
+    -1px -1px 0 white,
+     1px -1px 0 white,
+    -1px  1px 0 white,
+     1px  1px 0 white;
+}
+#banner h2 {
+  font-family: "Brush Script MT", cursive;
+  color: #FFD700;
+  font-size: 60px;
+  font-style: italic;
+}
+
+    </style>
+  </head>
+
+  <body>
+      <div id='map'></div>
+    <div id="banner">
+        <h1>Map of Portland, Oregon</h1>
+        <h2>By: Alex Christopher Esterberg </h2>
+    </div>
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoiYWxleC1lc3RlcmJlcmciLCJhIjoiY21uZnIyeG5qMDFnZTJwcHI2M2xqNmo1ayJ9.QDYxB69rrwvaNCD62Y0yEA';
+        
+        var myMap = new mapboxgl.Map({
+  container: 'map',
+  style: 'mapbox://styles/mapbox/dark-v11',
+  center: [-122.6788, 45.5212],
+  zoom: 11
+});
+        myMap.addControl(new mapboxgl.NavigationControl({
+    showCompass: false
+}), 'bottom-left');
+        var popup = new mapboxgl.Popup({ offset: 25 })
+    .setHTML('Hello World. Welcome to Portland!');
+        var marker = new mapboxgl.Marker({ color: 'red' })
+    .setLngLat([-122.6788, 45.5212])
+    .setPopup(popup)
+    .addTo(myMap);
+    var popup_blue = new mapboxgl.Popup({ offset: 25 })
+  .setLngLat([-122.69, 45.55])
+  .setHTML("<h3>Northwest Portland</h3>")
+  .addTo(myMap);
+
+
+
+var marker2 = new mapboxgl.Marker({ color: 'blue' })
+  .setLngLat([-122.69, 45.55])
+  .setPopup(popup_blue)
+  .addTo(myMap);
+    var marker3 = new mapboxgl.Marker({ color: 'green' })
+  .setLngLat([-122.8037, 45.4871])
+  .addTo(myMap);
+    var popup_layer = new mapboxgl.Popup({
+    closeOnClick: true,
+    anchor: 'top-right'
+})
+    .setLngLat([-122.64, 45.5])
+    .setHTML('<h1>Hi Portland!</h1>')
+    .addTo(myMap);
+    var popup_layer_voodoo = new mapboxgl.Popup({
+    closeOnClick: true,
+    anchor: 'top-left'
+})
+    .setLngLat([-122.673308, 45.522675])
+    .setHTML('<a href="https://www.voodoodoughnut.com" target="_blank">Voodoo Donuts</a>')
+    .addTo(myMap);
+   var popup_layer_breakside = new mapboxgl.Popup({
+    closeOnClick: true,
+    anchor: 'top-right'
+})
+.setLngLat([-122.844, 45.487])
+.setHTML('<a href="https://breakside.com/locations/beaverton/" target="_blank">Breakside Brewery</a>')
+.addTo(myMap);
+
+
+   </script>
+  </body>
+
+</html>
