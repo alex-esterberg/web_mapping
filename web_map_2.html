@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Fixed Map</title>
+
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.js"></script>
+    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.css" rel="stylesheet" />
+
+    <style>
+        body {
+            margin: 50px;
+        }
+
+        #map1 {
+            height: 300px;
+            width: 100%;
+        }
+        #map2 {
+            height: 300px;
+            width: 100%;
+        }
+        #map3 {
+            height: 300px;
+            width: 100%;
+        }
+       #fly {
+  display: block;
+  position: relative;
+  margin: 10px auto;
+  width: 30%;
+  height: 40px;
+  padding: 10px;
+  border: 3px solid black;
+  border-radius: 3px;
+  font-size: 12px;
+  text-align: center;
+  font-weight: bold;
+  color: oldlace;
+  background: forestgreen;
+}
+#title1 {
+  text-align: center;
+  color: grey;
+  font-family: "Century Gothic", sans-serif;
+  font-size: 32px;
+  margin-top: 20px;
+}
+#title2 {
+  text-align: center;
+  color: grey;
+  font-family: "Century Gothic", sans-serif;
+  font-size: 32px;
+  margin-top: 20px;
+}
+#title3 {
+  text-align: center;
+  color: grey;
+  font-family: "Century Gothic", sans-serif;
+  font-size: 32px;
+  margin-top: 20px;
+}
+.boston-row {
+    display: flex;
+    align-items: center;
+}
+
+
+#map1 {
+    width: 85%;
+    height: 300px;
+}
+.boston-box {
+    width: 15%;
+    margin-left: 15px;
+    padding: 15px;
+
+    background-color: white;
+    color: grey;
+
+    font-family: "Century Gothic", sans-serif;
+    font-size: 16px;
+
+    border-radius: 8px;
+}
+.chicago-row {
+    display: flex;
+    align-items: center;
+}
+
+#map2 {
+    width: 85%;
+    height: 300px;
+}
+
+.chicago-box {
+    width: 15%;
+    margin-right: 15px;
+    padding: 15px;
+    background-color: white;
+    color: grey;
+    font-family: "Century Gothic", sans-serif;
+    font-size: 16px;
+    border-radius: 8px;
+}
+.ny-row {
+    display: flex;
+    align-items: center;
+}
+
+#map3 {
+    width: 85%;
+    height: 300px;
+}
+
+.ny-box {
+    width: 15%;
+    margin-left: 15px;  /* 👈 box on RIGHT */
+    padding: 15px;
+    background-color: white;
+    color: grey;
+    font-family: "Century Gothic", sans-serif;
+    font-size: 16px;
+    border-radius: 8px;
+}
+    </style>
+</head>
+
+<body>
+<h1 id="title1">Marathon Majors in the US</h1>
+<h1 id="title1">Created by Alex Esterberg</h1>
+
+
+
+
+<h1 id="title1">Boston Marathon</h1>
+
+
+<div class="boston-row">
+    <div id="map1"></div>
+
+<div class="boston-box">
+   <p>
+<b>Course:</b> The Boston Marathon is famed for its point-to-point route from Hopkinton to Copley Square in Boston. The course features rolling hills, the challenging “Heartbreak Hill” near mile 20, and a net downhill overall, making it both a test of endurance and a fast course under the right conditions.
+
+
+<p>
+<b>Date:</b> Takes place on the third Monday of April each year, celebrated on Patriots' Day in parts of the USA, including Boston. The 2025 Boston Marathon was held on Monday, April 21.
+
+
+<p>
+The Marathon Majors are the most prestigious marathons in the world. They are known for their distinct courses, qualifying criteria, and tradition. There are six around the world, and this map showcases the three that are in the US. 
+<a href="https://www.worldmarathonmajors.com/" target="_blank">Learn more here</a>.
+</p>
+</div>
+    
+                                                                                       
+        </p>
+    </div>
+</div>
+
+<h1 id="title2">Chicago Marathon</h1>
+
+<div class="chicago-row">
+   <div class="chicago-box">
+
+  <p>
+    <b>Course:</b> Chicago’s marathon features a loop course that starts and ends in Grant Park, taking runners through diverse neighborhoods and iconic cityscapes. As a result of the course’s flat and fast nature, the Chicago Marathon is a favorite for those seeking personal bests.
+  </p>
+
+  <p>
+    <b>Date:</b> Takes place on the second Sunday of October each year.
+  </p>
+
+</div>
+
+    <div id="map2"></div>
+</div>
+<h1 id="title3">New York City Marathon</h1>
+
+<div class="ny-row">
+    <div id="map3"></div>
+
+    <div class="ny-box">
+
+  <p>
+    <b>Course:</b> The NYC Marathon’s point-to-point course spans the five boroughs, starting on Staten Island and finishing in Central Park. Additionally, the course includes notable bridges and varied terrain, providing a vibrant and challenging urban running experience.
+  </p>
+
+  <p>
+    <b>Date:</b> Takes place on the first Sunday of November each year.
+    
+  </p>
+
+</div>
+
+<script>
+mapboxgl.accessToken = 'pk.eyJ1IjoiYWxleC1lc3RlcmJlcmciLCJhIjoiY21uc2s4aDFrMGUxNDJxcTBkajRoY3k0ZCJ9.os7M8mKjZADrf5qkwcksqw';
+
+const map = new mapboxgl.Map({
+    container: 'map1',
+    style: "mapbox://styles/mapbox/outdoors-v12",
+    center: [-71.0589, 42.3601],
+    zoom: 10
+});
+
+map.scrollZoom.disable();
+map.boxZoom.disable();
+map.dragRotate.disable();
+map.dragPan.disable();
+map.keyboard.disable();
+map.doubleClickZoom.disable();
+map.touchZoomRotate.disable();
+var popup = new mapboxgl.Popup()
+  .setText('Boston Marathon: One of the oldest and most prestigious races in the world.');
+
+var marker = new mapboxgl.Marker({ color: 'red' })
+  .setLngLat([-71.0589, 42.3601])
+  .setPopup(popup)
+  .addTo(map);
+  // =====================
+// MAP 2
+// =====================
+
+const map2 = new mapboxgl.Map({
+    container: 'map2',
+    style: 'mapbox://styles/mapbox/light-v11',
+    center: [-87.6298, 41.8781],
+    zoom: 10
+});
+
+// Disable Map 2 interaction
+map2.scrollZoom.disable();
+map2.boxZoom.disable();
+map2.dragRotate.disable();
+map2.dragPan.disable();
+map2.keyboard.disable();
+map2.doubleClickZoom.disable();
+map2.touchZoomRotate.disable();
+
+// Add popup for Map 2
+var popup2 = new mapboxgl.Popup()
+  .setText('Chicago Marathon: Known for its fast, flat course and global competition.');
+
+// Add marker for Map 2
+var marker2 = new mapboxgl.Marker({ color: 'blue' })
+  .setLngLat([-87.6298, 41.8781])
+  .setPopup(popup2)
+  .addTo(map2);
+  map.getCanvas().style.cursor = 'pointer';
+map2.getCanvas().style.cursor = 'pointer';
+// =====================
+// MAP 3
+// =====================
+
+const map3 = new mapboxgl.Map({
+    container: 'map3',
+    style: 'mapbox://styles/mapbox/dark-v11',
+    center: [-74.0060, 40.7128],
+    zoom: 10
+});
+
+// Disable Map 3 interaction
+map3.scrollZoom.disable();
+map3.boxZoom.disable();
+map3.dragRotate.disable();
+map3.dragPan.disable();
+map3.keyboard.disable();
+map3.doubleClickZoom.disable();
+map3.touchZoomRotate.disable();
+
+// Add popup
+var popup3 = new mapboxgl.Popup()
+  .setText('New York City Marathon: Famous for its size, energy, and route through all five boroughs.');
+
+// Add marker
+var marker3 = new mapboxgl.Marker({ color: 'green' })
+  .setLngLat([-74.0060, 40.7128])
+  .setPopup(popup3)
+  .addTo(map3);
+
+// Cursor
+map3.getCanvas().style.cursor = 'pointer';
+
+</script>
+
+
+
+</body>
+</html>
