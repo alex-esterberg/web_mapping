@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <title>Earthquake Data-Driven Circles Map</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <!--    Include the reference to the Mapbox JavaScript here in the <head> of the page    -->
+      <script src="https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.js"></script>
+    <!--    Include the reference to the Mapbox CSS here in the <head> of the page    -->
+      <link href="https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.css" rel="stylesheet">
+    <style>
+        /* Insert the CSS code here between the <style> tags */
+        body { margin:0; padding:0; }
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+ #banner {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+transform: translateX(-50%);
+
+    z-index: 9999;
+    background-color white;
+    opacity: 0.8;
+    text-align: center;
+
+    padding: 10px;
+}
+    #banner h1 {
+  font-family: "Century Gothic", Arial, sans-serif;
+  color: #FFD700;
+  font-size: 70px;
+  text-shadow: 
+    -1px -1px 0 white,
+     1px -1px 0 white,
+    -1px  1px 0 white,
+     1px  1px 0 white;
+}
+#banner h2 {
+  font-family: "Brush Script MT", cursive;
+  color: #FFD700;
+  font-size: 40px;
+  font-style: italic;
+}
+
+    </style>
+  </head>
+
+  <body>
+      <div id='map'></div>
+    <div id="banner">
+        <h1>2021 Global Earthquakes</h1>
+        <h2>By: Alex Esterberg </h2>
+    </div>
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoiYWxleC1lc3RlcmJlcmciLCJhIjoiY21uZnIyeG5qMDFnZTJwcHI2M2xqNmo1ayJ9.QDYxB69rrwvaNCD62Y0yEA';
+        
+        var myMap = new mapboxgl.Map({
+  container: 'map',
+  style: 'mapbox://styles/alex-esterberg/cmoh9w8t5000301rd0ykqgup9',
+  center: [-150, 60],
+  zoom: 3
+});
+        myMap.addControl(new mapboxgl.NavigationControl({
+    showCompass: false
+}), 'bottom-left');
+        
+
+
+   </script>
+  </body>
+
+</html>
