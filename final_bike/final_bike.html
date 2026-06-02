@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <title>University of Oregon Mapping</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <!--    Include the reference to the Mapbox JavaScript here in the <head> of the page    -->
+      <script src="https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.js"></script>
+    <!--    Include the reference to the Mapbox CSS here in the <head> of the page    -->
+      <link href="https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.css" rel="stylesheet">
+    <style>
+                                        
+        body { margin:0; padding:0; }
+        * {
+    font-family: "Century Gothic", Arial, sans-serif;
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+
+        /*Map title banner*/
+
+#banner {
+    position: absolute;
+    top: 95px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    z-index: 9999;
+    background-color white;
+    opacity: 0.8;
+    text-align: center;
+    pointer-events: none;
+    padding: 10px;
+}
+    #banner h1 {
+  font-family: "Century Gothic", Arial, sans-serif;
+  color: #000000;
+  font-size: 40px;
+  line-height: 0.9;
+  text-shadow: 
+    -1px -1px 0 white,
+     1px -1px 0 white,
+    -1px  1px 0 white,
+     1px  1px 0 white;
+}
+#banner h2 {
+  font-family: "Century Gothic", Arial, sans-serif;
+  font-size: 30px;
+  
+  margin-top: -20px;
+    line-height: 0.9;
+}
+                /*path selection menu*/
+#menu {
+    position: absolute;
+    top: -75px;
+    left: 10px;
+    z-index: 9999;
+}
+
+#menu button {
+    background-color: darkred;
+    color: white;
+    padding: 2px;
+    border: 2px solid white;
+    font-weight: bold;
+    margin-right: 5px;
+    cursor: pointer;
+     font-family: "Century Gothic", Arial, sans-serif;
+     font-size: 40px;
+}
+    #menu-title {
+   color: white;
+    font-weight: bold;
+    font-size: 65px;
+    display: block;
+    background-color: rgba(0,0,0,0.7);
+    padding: 2px;
+    margin-bottom: 0px;
+    width: fit-content;
+}
+              /*legend box*/
+#legendBox {
+    position: absolute;
+    bottom: 30px;
+    left: 30px;
+    width: 360px;
+    background-color: white;
+    color: black;
+    padding: 15px;
+    border-radius: 10px;
+    z-index: 99999;
+    display: block;
+    font-family: "Century Gothic", Arial, sans-serif;
+}
+              /*legend collapse button*/
+#legendToggle {
+    width: 100%;
+    background: none;
+    border: none;
+    color: black;
+    font-size: 35px;
+    cursor: pointer;
+}
+
+#legendContent h2 {
+    font-size: 28px;
+}
+
+#legendContent p {
+    font-size: 18px;
+    line-height: 1.4;
+}
+
+.legendItem {
+    font-size: 18px;
+    margin-top: 6px;
+}
+    
+
+.legendItem {
+    font-size: 18px;
+    margin-top: 6px;
+}
+                    /*north arrow*/
+#north-arrow {
+    position: absolute;
+    bottom: 60px;
+    right: 20px;
+    z-index: 1000;
+
+    font-family: "Century Gothic", sans-serif;
+    font-size: 28px;
+    font-weight: bold;
+    text-align: center;
+
+    background: rgba(255,255,255,0.9);
+    padding: 8px;
+    border-radius: 5px;
+    color: black;
+}
+
+</style>
+
+  </head>
+
+  <body>
+
+                            /*map display*/
+      <div id='map'></div>
+  <div id="north-arrow">
+    ⬆
+    <br>
+    N
+</div>
+
+                          /*map title banner*/
+    <div id="banner">
+      <h1 id="title">Fern Ridge Path</h1>
+<h2 id="subtitle">Located in Eugene, Oregon</h2>
+    </div>
+
+                        /*path selection menu*/
+    <div id="menu">
+<p id="menu-title">Vegetation and Water Bodies along Bike Paths</p>
+<button id="fernridge">Fern Ridge Path</button>
+<button id="eugene">Ruth Bascom Path</button>
+<button id="millrace">Mill Race/Middle Fork Path</button>
+</div>
+
+                                /*legend*/
+<div id="legendBox">
+
+    <button id="legendToggle">⌄</button>
+
+    <div id="legendContent">
+        
+
+        <h2>WHAT AM I LOOKING AT?</h2>
+
+        <p>
+            This map shows forests, wetlands, ponds and rivers along bike paths in Eugene and Springfield. It is intended to show how beautiful nature is surrounding these paths. There are viewing areas you can see a rangle of animals and hear the sounds of their interaction.
+        </p>
+
+        <div class="legendItem"><span style="color:red;">🚴</span> Bike Paths</div>
+        <div class="legendItem"><span style="color:#ee4b2b;">━━━</span> Bike Paths</div>
+<div class="legendItem"><span>🌲</span> Forests</div>
+ 
+        
+
+        
+
+
+        <div class="legendItem"><span style="color:#8daa3a;">▮</span> Oak Savanna</div>
+        <div class="legendItem"><span style="color:#4f7942;">▮</span> Riparian Hardwoods</div>
+        <div class="legendItem"><span style="color:#8b3a3a;">▮</span> Red Alder</div>
+        <div class="legendItem"><span style="color:#6b4423;">▮</span> Oregon Ash</div>
+        <div class="legendItem"><span style="color:#0b3d0b;">▮</span> Douglas Fir</div>
+<div class="legendItem"><span>👀</span> Viewing Areas on Bike Path</div>
+        <div class="legendItem"><span>🚂</span> Railroads</div>
+        <div class="legendItem"><span style="color:black;">- - -</span> Railroads</div>
+        
+        <div class="legendItem"><span style="color:#1565c1;">💧</span> Water Bodies</div>
+         <div class="legendItem"><span style="color:#7fd3ff;">━━━</span> Amazon Creek</div>
+        <div class="legendItem"><span style="color:#1565c1;">━━━</span> Willamette River</div>
+         <div class="legendItem"><span style="color:#5f9ea0;">▮</span> Delta Ponds</div>
+        <div class="legendItem"><span style="color:#1565c1;">▮</span> Q Street Floodway</div>
+        <div class="legendItem"><span style="color:#1565c1;">▮</span> Canoe Canal</div>
+       
+       
+
+        <div class="legendItem"><span style="color:#c2b280;">🌿</span> Wetlands</div>
+        <div class="legendItem"><span style="color:#b7d96c;">▮</span> Wet Prairie</div>
+       <div class="legendItem"><span style="color:#c2b280;">▮</span> Pasture Old Field or Wet Fill</div>
+<div class="legendItem"><span style="color:#4da6ff;">🦆</span> Open Water or Emergent Marsh</div>
+<div class="legendItem"><span style="color:#4da6ff;">▮</span> Open Water or Emergent Marsh</div>
+<div class="legendItem">
+    <a href="https://drive.google.com/file/d/1sKKJ8Jia9bC1fZREatWof0IIOwQh-kkU/view?usp=sharing" target="_blank" style="color:black;">
+        💻 Click for Data & Software Sources
+    </a>
+</div>
+<div class="legendItem" style="padding-left:20px; font-size:12px;">
+    Web Map Created by Alex Esterberg
+</div>
+    
+</div>
+    </div>
+</div>
+
+                   /*mapbox javascript*/
+
+
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoiYWxleC1lc3RlcmJlcmciLCJhIjoiY21uZnIyeG5qMDFnZTJwcHI2M2xqNmo1ayJ9.QDYxB69rrwvaNCD62Y0yEA';
+        
+        var myMap = new mapboxgl.Map({
+  container: 'map',
+  style: 'mapbox://styles/alex-esterberg/cmpfzch7j003r01sn12qfbmax',
+  center: [-123.17, 44.06],
+  zoom: 13,
+minZoom: 13.2,
+maxZoom: 14,
+maxBounds: [
+    [-123.28, 43.97],
+    [-122.88, 44.12]
+]
+});
+
+                   /*sample marker and popup code*/
+
+
+        myMap.addControl(new mapboxgl.NavigationControl({
+    showCompass: false
+}), 'top-right');
+        var popup = new mapboxgl.Popup({ offset: 25 })
+    .setHTML('Hello World. Welcome to Portland!');
+        var marker = new mapboxgl.Marker({ color: 'red' })
+    .setLngLat([-122.6788, 45.5212])
+    .setPopup(popup)
+    .addTo(myMap);
+    var popup_blue = new mapboxgl.Popup({ offset: 25 })
+  .setLngLat([-122.69, 45.55])
+  .setHTML("<h3>Northwest Portland</h3>")
+  .addTo(myMap);
+
+
+
+var marker2 = new mapboxgl.Marker({ color: 'blue' })
+  .setLngLat([-122.69, 45.55])
+  .setPopup(popup_blue)
+  .addTo(myMap);
+    var marker3 = new mapboxgl.Marker({ color: 'green' })
+  .setLngLat([-122.8037, 45.4871])
+  .addTo(myMap);
+    var popup_layer = new mapboxgl.Popup({
+    closeOnClick: true,
+    anchor: 'top-right'
+})
+    .setLngLat([-122.64, 45.5])
+    .setHTML('<h1>Hi Portland!</h1>')
+    .addTo(myMap);
+    var popup_layer_voodoo = new mapboxgl.Popup({
+    closeOnClick: true,
+    anchor: 'top-left'
+})
+    .setLngLat([-122.673308, 45.522675])
+    .setHTML('<a href="https://www.voodoodoughnut.com" target="_blank">Voodoo Donuts</a>')
+    .addTo(myMap);
+   var popup_layer_breakside = new mapboxgl.Popup({
+    closeOnClick: true,
+    anchor: 'top-right'
+})
+.setLngLat([-122.844, 45.487])
+.setHTML('<a href="https://breakside.com/locations/beaverton/" target="_blank">Breakside Brewery</a>')
+.addTo(myMap);
+
+
+
+
+
+
+
+
+
+
+
+
+              /*railroad popup markers*/
+
+
+var trainPopup = new mapboxgl.Popup({ offset: 25 })
+    .setHTML('<h3 style="font-family: Century Gothic, Arial, sans-serif; font-style: italic; text-transform: uppercase;">Union Pacific Railroad Company</h3><p style="font-family: Century Gothic, Arial, sans-serif; font-style: italic; text-transform: uppercase;">Trees come to these mills as logs and they convert them into lumber and trains transport them around the US.</p>');
+
+var trainElement = document.createElement('div');
+trainElement.innerHTML = '🚂';
+trainElement.style.fontSize = '35px';
+trainElement.style.cursor = 'pointer';
+
+new mapboxgl.Marker(trainElement)
+    .setLngLat([-122.993267, 44.041422])
+    .setPopup(trainPopup)
+    .addTo(myMap);
+
+var trainPopup2 = new mapboxgl.Popup({ offset: 25 })
+    .setHTML('<h3 style="font-family: Century Gothic, Arial, sans-serif; font-style: italic; text-transform: uppercase;">Union Pacific Railroad Company</h3>');
+
+var trainElement2 = document.createElement('div');
+trainElement2.innerHTML = '🚂';
+trainElement2.style.fontSize = '35px';
+trainElement2.style.cursor = 'pointer';
+
+new mapboxgl.Marker(trainElement2)
+    .setLngLat([-123.094641, 44.055624])
+    .setPopup(trainPopup2)
+    .addTo(myMap);
+
+var trainPopup3 = new mapboxgl.Popup({ offset: 25 })
+    .setHTML('<h3 style="font-family: Century Gothic, Arial, sans-serif; font-style: italic; text-transform: uppercase;">Union Pacific Railroad Company</h3>');
+
+var trainElement3 = document.createElement('div');
+trainElement3.innerHTML = '🚂';
+trainElement3.style.fontSize = '35px';
+trainElement3.style.cursor = 'pointer';
+
+new mapboxgl.Marker(trainElement3)
+    .setLngLat([-123.182639, 44.059085])
+    .setPopup(trainPopup3)
+    .addTo(myMap);
+
+
+
+
+
+
+
+               /*forest vegetation popup markers*/
+    
+var douglasPopup = new mapboxgl.Popup({ offset: 25 })
+.setHTML('<h3>Douglas Fir</h3>The Douglas fir is a large, sun-loving conifer capable of living hundreds of years, it can reach more than 200 feet in height and 10 feet in diameter.          source: https://oregonforests.org/forest-types-tree-guide/tree-variety/douglas-fir </p>');
+
+var douglasElement = document.createElement('div');
+douglasElement.innerHTML = '🌲';
+douglasElement.style.fontSize = '35px';
+douglasElement.style.cursor = 'pointer';
+douglasElement.style.zIndex = '9999';
+new mapboxgl.Marker(douglasElement)
+    .setLngLat([-122.966051, 44.017684])
+    .setPopup(douglasPopup)
+    .addTo(myMap);
+   
+
+var alderPopup = new mapboxgl.Popup({ offset: 25 })
+.setHTML('<h3>Red Alder</h3>The Red Alder is a medium broadleaf tree that can grow up to 120 feet tall. It grows well near streams. The leaves are broadleaf ovals that turn yellow in the fall making views along this path a wondrus experience.          Source: https://oregonforests.org/forest-types-tree-guide/tree-variety/red-alder </p>');
+
+var alderElement = document.createElement('div');
+alderElement.innerHTML = '🌲';
+alderElement.style.fontSize = '35px';
+alderElement.style.cursor = 'pointer';
+new mapboxgl.Marker(alderElement)
+    .setLngLat([-122.988395, 44.026604])
+    .setPopup(alderPopup)
+    .addTo(myMap);
+
+var ashPopup = new mapboxgl.Popup({ offset: 25 })
+.setHTML('<h3>Oregon Ash</h3>The Oregon Ash is a native tree to Oregon. It is found along streams and in wet sites. It can grow on the most poorly drained valley soils. It is a shade tollerant broadleaf tree that can grow up to 100 feet tall.          Source: https://oregonforests.org/forest-types-tree-guide/tree-variety/oregon-ash</p>');
+
+var ashElement = document.createElement('div');
+ashElement.innerHTML = '🌲';
+ashElement.style.fontSize = '35px';
+ashElement.style.cursor = 'pointer';
+new mapboxgl.Marker(ashElement)
+    .setLngLat([-123.0330625, 44.0152140])
+    .setPopup(ashPopup)
+    .addTo(myMap);
+
+var riparianPopup = new mapboxgl.Popup({ offset: 25 })
+.setHTML('<h3>Riparian Hardwoods</h3>Riparian Hardwoods are deciduous broad leaf trees that thrive along streams, rivers, and wetlands. These trees stabolize streambanks, filter pollutants and provide an essential wildlife habitat.          Source: https://extension.oregonstate.edu/catalog/em-9040-guide-riparian-tree-shrub-planting-willamette-valley-steps-success</p>');
+
+var riparianElement = document.createElement('div');
+riparianElement.innerHTML = '🌲';
+riparianElement.style.fontSize = '35px';
+riparianElement.style.cursor = 'pointer';
+new mapboxgl.Marker(riparianElement)
+    .setLngLat([-122.982072, 44.035581])
+    .setPopup(riparianPopup)
+    .addTo(myMap);
+
+var oakPopup = new mapboxgl.Popup({ offset: 25 })
+.setHTML('<h3>Oak Savanna</h3>Oak Savannas are a fire dependent ecosystem. They are areas of shrubs, grasses and wildflowers surrounded by widely spaced Oregon white oaks.          Source: https://swap.oregon.gov/key-habitat/oak-woodlands/</p>');
+
+var oakElement = document.createElement('div');
+oakElement.innerHTML = '🌲';
+oakElement.style.fontSize = '35px';
+oakElement.style.cursor = 'pointer';
+new mapboxgl.Marker(oakElement)
+    .setLngLat([-123.018237, 44.036724])
+    .setPopup(oakPopup)
+    .addTo(myMap);
+
+var douglasPopup2 = new mapboxgl.Popup({ offset: 25 })
+.setHTML('<h3>Douglas Fir</h3>The Douglas fir is a large, sun-loving conifer capable of living hundreds of years, it can reach more than 200 feet in height and 10 feet in diameter.          source: https://oregonforests.org/forest-types-tree-guide/tree-variety/douglas-fir </p>');
+
+var douglasElement2 = document.createElement('div');
+douglasElement2.innerHTML = '🌲';
+douglasElement2.style.fontSize = '35px';
+douglasElement2.style.cursor = 'pointer';
+new mapboxgl.Marker(douglasElement2)
+    .setLngLat([-123.087563, 44.066936])
+    .setPopup(douglasPopup2)
+    .addTo(myMap);
+
+    var ashPopup2 = new mapboxgl.Popup({ offset: 25 })
+.setHTML('<h3>Oregon Ash</h3>The Oregon Ash is a native tree to Oregon. It is found along streams and in wet sites. It can grow on the most poorly drained valley soils. It is a shade tollerant broadleaf tree that can grow up to 100 feet tall.          Source: https://oregonforests.org/forest-types-tree-guide/tree-variety/oregon-ash</p</p>');
+
+var ashElement2 = document.createElement('div');
+ashElement2.innerHTML = '🌲';
+ashElement2.style.fontSize = '35px';
+ashElement2.style.cursor = 'pointer';
+new mapboxgl.Marker(ashElement2)
+    .setLngLat([-123.087562, 44.084688])
+    .setPopup(ashPopup2)
+    .addTo(myMap);
+
+var riparianPopup2 = new mapboxgl.Popup({ offset: 25 })
+.setHTML('<h3>Riparian Hardwoods</h3>Riparian Hardwoods are deciduous broad leaf trees that thrive along streams, rivers, and wetlands. These trees stabolize streambanks, filter pollutants and provide an essential wildlife habitat.          Source: https://extension.oregonstate.edu/catalog/em-9040-guide-riparian-tree-shrub-planting-willamette-valley-steps-success</p</p>');
+
+var riparianElement2 = document.createElement('div');
+riparianElement2.innerHTML = '🌲';
+riparianElement2.style.fontSize = '35px';
+riparianElement2.style.cursor = 'pointer';
+new mapboxgl.Marker(riparianElement2)
+    .setLngLat([-123.104760, 44.071710])
+    .setPopup(riparianPopup2)
+    .addTo(myMap);
+
+    var oakPopup2 = new mapboxgl.Popup({ offset: 25 })
+.setHTML('<h3>Oak Savanna</h3>Oak Savannas are a fire dependent ecosystem. They are areas of shrubs, grasses and wildflowers surrounded by widely spaced Oregon white oaks.          Source: https://swap.oregon.gov/key-habitat/oak-woodlands/</p>');
+
+var oakElement2 = document.createElement('div');
+oakElement2.innerHTML = '🌲';
+oakElement2.style.fontSize = '35px';
+oakElement2.style.cursor = 'pointer';
+new mapboxgl.Marker(oakElement2)
+    .setLngLat([-123.044908, 44.052485])
+    .setPopup(oakPopup2)
+    .addTo(myMap);
+
+    var ashPopup3 = new mapboxgl.Popup({ offset: 25 })
+.setHTML('<h3>Oregon Ash</h3>The Oregon Ash is a native tree to Oregon. It is found along streams and in wet sites. It can grow on the most poorly drained valley soils. It is a shade tollerant broadleaf tree that can grow up to 100 feet tall.          Source: https://oregonforests.org/forest-types-tree-guide/tree-variety/oregon-ash</p>');
+
+var ashElement3 = document.createElement('div');
+ashElement3.innerHTML = '🌲';
+ashElement3.style.fontSize = '35px';
+ashElement3.style.cursor = 'pointer';
+new mapboxgl.Marker(ashElement3)
+    .setLngLat([-123.1025721, 44.0455827])
+    .setPopup(ashPopup3)
+    .addTo(myMap);
+
+    var douglasPopup3 = new mapboxgl.Popup({ offset: 25 })
+.setHTML('<h3>Douglas Fir</h3>The Douglas fir is a large, sun-loving conifer capable of living hundreds of years, it can reach more than 200 feet in height and 10 feet in diameter.          source: https://oregonforests.org/forest-types-tree-guide/tree-variety/douglas-fir </p>');
+
+var douglasElement3 = document.createElement('div');
+douglasElement3.innerHTML = '🌲';
+douglasElement3.style.fontSize = '35px';
+douglasElement3.style.cursor = 'pointer';
+new mapboxgl.Marker(douglasElement3)
+    .setLngLat([-123.2062085, 44.0362975])
+    .setPopup(douglasPopup3)
+    .addTo(myMap);
+
+    var oakPopup3 = new mapboxgl.Popup({ offset: 25 })
+.setHTML('<h3>Oak Savanna</h3>Oak Savannas are a fire dependent ecosystem. They are areas of shrubs, grasses and wildflowers surrounded by widely spaced Oregon white oaks.          Source: https://swap.oregon.gov/key-habitat/oak-woodlands/</p>');
+
+var oakElement3 = document.createElement('div');
+oakElement3.innerHTML = '🌲';
+oakElement3.style.fontSize = '35px';
+oakElement3.style.cursor = 'pointer';
+new mapboxgl.Marker(oakElement3)
+    .setLngLat([-123.192393, 44.042065])
+    .setPopup(oakPopup3)
+    .addTo(myMap);
+
+    var riparianPopup3 = new mapboxgl.Popup({ offset: 25 })
+.setHTML('<h3>Riparian Hardwoods</h3>Riparian Hardwoods are deciduous broad leaf trees that thrive along streams, rivers, and wetlands. These trees stabolize streambanks, filter pollutants and provide an essential wildlife habitat.          Source: https://extension.oregonstate.edu/catalog/em-9040-guide-riparian-tree-shrub-planting-willamette-valley-steps-success</p</p>');
+
+var riparianElement3 = document.createElement('div');
+riparianElement3.innerHTML = '🌲';
+riparianElement3.style.fontSize = '35px';
+riparianElement3.style.cursor = 'pointer';
+new mapboxgl.Marker(riparianElement3)
+    .setLngLat([-123.153554, 44.053086])
+    .setPopup(riparianPopup3)
+    .addTo(myMap);
+
+
+
+
+
+
+
+
+
+               /*water body popup markers*/
+    
+   var riverPopup = new mapboxgl.Popup({ offset: 25 })
+.setHTML('<h3 style="font-family: Bodoni MT, serif; font-style: italic; color: #1565c1;">Willamette River</h3><p style="font-family: Bodoni MT, serif; font-style: italic; color: #1565c1;"></p>');
+
+var riverElement = document.createElement('div');
+riverElement.innerHTML = '💧';
+riverElement.style.fontSize = '35px';
+riverElement.style.cursor = 'pointer';
+
+new mapboxgl.Marker(riverElement)
+    .setLngLat([-123.095890, 44.062740])
+    .setPopup(riverPopup)
+    .addTo(myMap);
+
+var deltaPopup = new mapboxgl.Popup({ offset: 25 })
+.setHTML('<h3 style="font-family: Bodoni MT, serif; font-style: italic; color: #5f9ea0;">Delta Ponds</h3><p style="font-family: Bodoni MT, serif; font-style: italic; color: #5f9ea0;"></p>');
+
+var deltaElement = document.createElement('div');
+deltaElement.innerHTML = '💧';
+deltaElement.style.fontSize = '35px';
+deltaElement.style.cursor = 'pointer';
+
+new mapboxgl.Marker(deltaElement)
+    .setLngLat([-123.106685, 44.079569])
+    .setPopup(deltaPopup)
+    .addTo(myMap);
+
+var amazonPopup = new mapboxgl.Popup({ offset: 25 })
+.setHTML('<h3 style="font-family: Bodoni MT, serif; font-style: italic; color: #7fd3ff;">Amazon Creek</h3><p style="font-family: Bodoni MT, serif; font-style: italic; color: #7fd3ff;"></p>');
+
+var amazonElement = document.createElement('div');
+amazonElement.innerHTML = '💧';
+amazonElement.style.fontSize = '35px';
+amazonElement.style.cursor = 'pointer' ;
+
+new mapboxgl.Marker(amazonElement)
+    .setLngLat([-123.1973920, 44.0620184])
+    .setPopup(amazonPopup)
+    .addTo(myMap);
+
+var coastForkPopup = new mapboxgl.Popup({ offset: 25 })
+.setHTML('<h3 style="font-family: Bodoni MT, serif; font-style: italic; color: #1565c1;">Coast Fork Willamette River</h3><p style="font-family: Bodoni MT, serif; font-style: italic; color: #1565c1;"></p>');
+
+var coastForkElement = document.createElement('div');
+coastForkElement.innerHTML = '💧';
+coastForkElement.style.fontSize = '35px';
+coastForkElement.style.cursor = 'pointer' ;
+
+
+new mapboxgl.Marker(coastForkElement)
+    .setLngLat([-122.992159, 44.016971])
+    .setPopup(coastForkPopup)
+    .addTo(myMap);
+
+var willamette3Popup = new mapboxgl.Popup({ offset: 25 })
+.setHTML('<h3 style="font-family: Bodoni MT, serif; font-style: italic; color: #1565c1;">Willamette River</h3><p style="font-family: Bodoni MT, serif; font-style: italic; color: #1565c1;"></p>');
+
+var willamette3Element = document.createElement('div');
+willamette3Element.innerHTML = '💧';
+willamette3Element.style.fontSize = '35px';
+willamette3Element.style.cursor = 'pointer' ;
+
+new mapboxgl.Marker(willamette3Element)
+    .setLngLat([-123.0262715, 44.0268952])
+    .setPopup(willamette3Popup)
+    .addTo(myMap);
+
+var middleForkPopup = new mapboxgl.Popup({ offset: 25 })
+.setHTML('<h3 style="font-family: Bodoni MT, serif; font-style: italic; color: #1565c1;">Middle Fork Willamette River</h3><p style="font-family: Bodoni MT, serif; font-style: italic; color: #1565c1;"></p>');
+
+var middleForkElement = document.createElement('div');
+middleForkElement.innerHTML = '💧';
+middleForkElement.style.fontSize = '35px';
+middleForkElement.style.cursor = 'pointer' ;
+
+new mapboxgl.Marker(middleForkElement)
+    .setLngLat([-122.9681460, 44.0243420])
+    .setPopup(middleForkPopup)
+    .addTo(myMap);
+
+
+
+
+
+                   /*wetland popup markers*/
+  
+var wetPrairiePopup = new mapboxgl.Popup({ offset: 25 })
+    .setHTML('<h3 style="color: saddlebrown;">Wet Prairie</h3><p style="color: saddlebrown;">Wet Prairies are areas that get flooded seasonally due to poorly drained clay soils. Surface water will pool here during the winter months and dry out by the late spring. Its a lovely view where you can see animals wildflowers and prairie grasses.          Source: https://www.bentonswcd.org/wet-prairie</p>');
+
+var wetPrairieElement = document.createElement('div');
+wetPrairieElement.innerHTML = '🌿';
+wetPrairieElement.style.fontSize = '35px';
+wetPrairieElement.style.cursor = 'pointer';
+
+
+new mapboxgl.Marker(wetPrairieElement)
+    .setLngLat([-123.2051000, 44.0660877])
+    .setPopup(wetPrairiePopup)
+    .addTo(myMap);
+
+var pasturePopup = new mapboxgl.Popup({ offset: 25 })
+    .setHTML('<h3 style="color: saddlebrown;">Pasture Old Field or Wet Fill</h3><p style="color: saddlebrown;">Oregon pasture wetlands are seasonally or perennially saturated agricultural lands dominated by grazing grasses rather than native trees. Old field wetlands are former agricultural areas or wet prairies that have been abandoned and are now dominated by non-native pasture grasses. Wet fill wetlands is an area with perennially saturated or inundated soils where the water table is at or very near the surface.          Source: https://www.eugene-or.gov/644/Wetlands</p>');
+
+var pastureElement = document.createElement('div');
+pastureElement.innerHTML = '🌿';
+pastureElement.style.fontSize = '35px';
+pastureElement.style.cursor = 'pointer';
+
+new mapboxgl.Marker(pastureElement)
+    .setLngLat([-123.1956615, 44.0537447])
+    .setPopup(pasturePopup)
+    .addTo(myMap);
+
+var marshPopup = new mapboxgl.Popup({ offset: 25 })
+    .setHTML('<h3 style="color: saddlebrown;">Open Water or Emergent Marsh</h3><p style="color: saddlebrown;">Open water/emergent marsh wetlands have shallow standing water and vegetation that emerges above the water surface such as cattails. These wetlands provide an important habitat for animals. They also improve water quality and reduce flooding.          Source: https://www.eugene-or.gov/644/Wetlands</p>');
+
+var marshElement = document.createElement('div');
+marshElement.innerHTML = '🦆';
+marshElement.style.fontSize = '25px';
+marshElement.style.cursor = 'pointer';
+
+new mapboxgl.Marker(marshElement)
+    .setLngLat([-123.1947410, 44.0602198])
+    .setPopup(marshPopup)
+    .addTo(myMap);
+
+
+
+
+
+
+
+           /*Lumber mill website popup markers*/
+
+var rosboroPopup = new mapboxgl.Popup({ offset: 25 })
+    .setHTML('<a href="https://rosboro.com/" target="_blank" style="color: forestgreen;">Rosboro - Building Better Engineered Wood Products</a>');
+
+var rosboroElement = document.createElement('div');
+rosboroElement.innerHTML = '🏭';
+rosboroElement.style.fontSize = '35px';
+rosboroElement.style.cursor = 'pointer';
+
+new mapboxgl.Marker(rosboroElement)
+    .setLngLat([-122.992183, 44.044235])
+    .setPopup(rosboroPopup)
+    .addTo(myMap);
+
+var swansonPopup = new mapboxgl.Popup({ offset: 25 })
+    .setHTML('<a href="https://swansongroup.biz/" target="_blank" style="color: forestgreen;">Swanson Group Forest Products Plywood Mill</a>');
+
+var millElement = document.createElement('div');
+millElement.innerHTML = '🏭';
+millElement.style.fontSize = '35px';
+millElement.style.cursor = 'pointer';
+
+new mapboxgl.Marker(millElement)
+    .setLngLat([-122.999786, 44.041270])
+    .setPopup(swansonPopup)
+    .addTo(myMap);
+
+
+
+
+
+
+
+
+
+            /*bike paths popup markers*/
+
+var bikePopup12 = new mapboxgl.Popup({ offset: 25 })
+   .setHTML('<h3 style="color: red;">Mill Race Path</h3><p style="color: red;"></p>');
+var bikeElement12 = document.createElement('div');
+bikeElement12.innerHTML = '🚴';
+bikeElement12.style.fontSize = '30px';
+bikeElement12.style.cursor = 'pointer';
+
+new mapboxgl.Marker(bikeElement12)
+    .setLngLat([-122.998379, 44.039967])
+    .setPopup(bikePopup12)
+    .addTo(myMap);
+
+var bikePopup11 = new mapboxgl.Popup({ offset: 25 })
+   .setHTML('<h3 style="color: red;">Greenway Bridge Path</h3><p style="color: red;"></p>');
+
+var bikeElement11 = document.createElement('div');
+bikeElement11.innerHTML = '🚴';
+bikeElement11.style.fontSize = '30px';
+bikeElement11.style.cursor = 'pointer';
+
+new mapboxgl.Marker(bikeElement11)
+    .setLngLat([-123.112001, 44.067386])
+    .setPopup(bikePopup11)
+    .addTo(myMap);
+
+var bikePopup10 = new mapboxgl.Popup({ offset: 25 })
+   .setHTML('<h3 style="color: red;">Walnut Path</h3><p style="color: red;"></p>');
+var bikeElement10 = document.createElement('div');
+bikeElement10.innerHTML = '🚴';
+bikeElement10.style.fontSize = '30px';
+bikeElement10.style.cursor = 'pointer';
+
+new mapboxgl.Marker(bikeElement10)
+    .setLngLat([-123.056619, 44.047833])
+    .setPopup(bikePopup10)
+    .addTo(myMap);
+
+var bikePopup9 = new mapboxgl.Popup({ offset: 25 })
+   .setHTML('<h3 style="color: red;">Knickerbocker Path</h3><p style="color: red;"></p>');
+
+var bikeElement9 = document.createElement('div');
+bikeElement9.innerHTML = '🚴';
+bikeElement9.style.fontSize = '30px';
+bikeElement9.style.cursor = 'pointer';
+
+new mapboxgl.Marker(bikeElement9)
+    .setLngLat([-123.057637, 44.044821])
+    .setPopup(bikePopup9)
+    .addTo(myMap);
+
+var bikePopup8 = new mapboxgl.Popup({ offset: 25 })
+   .setHTML('<h3 style="color: red;">Autzen Connection Path</h3><p style="color: red;"></p>');
+var bikeElement8 = document.createElement('div');
+bikeElement8.innerHTML = '🚴';
+bikeElement8.style.fontSize = '30px';
+bikeElement8.style.cursor = 'pointer';
+
+new mapboxgl.Marker(bikeElement8)
+    .setLngLat([-123.071403, 44.051497])
+    .setPopup(bikePopup8)
+    .addTo(myMap);
+
+var bikePopup7 = new mapboxgl.Popup({ offset: 25 })
+   .setHTML('<h3 style="color: red;">Canoe Canal Path</h3><p style="color: red;"></p>');
+var bikeElement7 = document.createElement('div');
+bikeElement7.innerHTML = '🚴';
+bikeElement7.style.fontSize = '30px';
+bikeElement7.style.cursor = 'pointer';
+
+new mapboxgl.Marker(bikeElement7)
+    .setLngLat([-123.056987, 44.051539])
+    .setPopup(bikePopup7)
+    .addTo(myMap);
+
+var bikePopup6 = new mapboxgl.Popup({ offset: 25 })
+   .setHTML('<h3 style="color: red;">Ruth Bascom Path North Bank</h3><p style="color: red;"></p>');
+
+var bikeElement6 = document.createElement('div');
+bikeElement6.innerHTML = '🚴';
+bikeElement6.style.fontSize = '30px';
+bikeElement6.style.cursor = 'pointer';
+
+new mapboxgl.Marker(bikeElement6)
+    .setLngLat([-123.086906, 44.060282])
+    .setPopup(bikePopup6)
+    .addTo(myMap);
+
+var bikePopup5 = new mapboxgl.Popup({ offset: 25 })
+   .setHTML('<h3 style="color: red;">Ruth Bascom South Bank</h3><p style="color: red;"></p>');
+
+var bikeElement5 = document.createElement('div');
+bikeElement5.innerHTML = '🚴';
+bikeElement5.style.fontSize = '30px';
+bikeElement5.style.cursor = 'pointer';
+
+new mapboxgl.Marker(bikeElement5)
+    .setLngLat([-123.107807, 44.064063])
+    .setPopup(bikePopup5)
+    .addTo(myMap);
+
+   var bikePopup13 = new mapboxgl.Popup({ offset: 25 })
+    .setHTML('<h3 style="color: red;">Middle Fork Path</h3><p style="color: red;"></p>');
+
+var bikeElement13 = document.createElement('div');
+bikeElement13.innerHTML = '🚴';
+bikeElement13.style.fontSize = '30px';
+bikeElement13.style.cursor = 'pointer';
+
+new mapboxgl.Marker(bikeElement13)
+    .setLngLat([-122.962602, 44.024896])
+    .setPopup(bikePopup13)
+    .addTo(myMap);
+
+var bikePopup14 = new mapboxgl.Popup({ offset: 25 })
+    .setHTML('<h3 style="color: red;">Middle Fork Path</h3><p style="color: red;"></p>');
+
+var bikeElement14 = document.createElement('div');
+bikeElement14.innerHTML = '🚴';
+bikeElement14.style.fontSize = '30px';
+bikeElement14.style.cursor = 'pointer';
+
+new mapboxgl.Marker(bikeElement14)
+    .setLngLat([-123.008780, 44.024927])
+    .setPopup(bikePopup14)
+    .addTo(myMap);
+
+var bikePopup3 = new mapboxgl.Popup({ offset: 25 })
+    .setHTML('<h3 style="color: red;">Ruth Bascom Path East Bank</h3><p style="color: red;"></p>');
+
+var bikePopup4 = new mapboxgl.Popup({ offset: 25 })
+    .setHTML('<h3 style="color: red;">Owosso Bike Path</h3><p style="color: red;"></p>');
+
+var bikeElement4 = document.createElement('div');
+bikeElement4.innerHTML = '🚴';
+bikeElement4.style.fontSize = '30px';
+bikeElement4.style.cursor = 'pointer';
+
+new mapboxgl.Marker(bikeElement4)
+    .setLngLat([-123.116228, 44.091923])
+    .setPopup(bikePopup4)
+    .addTo(myMap);
+
+var bikeElement3 = document.createElement('div');
+bikeElement3.innerHTML = '🚴';
+bikeElement3.style.fontSize = '30px';
+bikeElement3.style.cursor = 'pointer';
+
+new mapboxgl.Marker(bikeElement3)
+    .setLngLat([-123.112126, 44.070813])
+    .setPopup(bikePopup3)
+    .addTo(myMap);
+
+var bikePopup2 = new mapboxgl.Popup({ offset: 25 })
+    .setHTML('<h3 style="color: red;">Ruth Bascom Path West Bank</h3><p style="color: red;"></p>');
+
+var bikeElement2 = document.createElement('div');
+bikeElement2.innerHTML = '🚴';
+bikeElement2.style.fontSize = '30px';
+bikeElement2.style.cursor = 'pointer';
+
+new mapboxgl.Marker(bikeElement2)
+    .setLngLat([-123.118143, 44.082773])
+    .setPopup(bikePopup2)
+    .addTo(myMap);
+
+var bikePopup1 = new mapboxgl.Popup({ offset: 25 })
+    .setHTML('<h3 style="color: red;">Fern Ridge Path</h3><p style="color: red;"></p>');
+
+var bikeElement1 = document.createElement('div');
+bikeElement1.innerHTML = '🚴';
+bikeElement1.style.fontSize = '30px';
+bikeElement1.style.cursor = 'pointer';
+
+new mapboxgl.Marker(bikeElement1)
+    .setLngLat([-123.1776136, 44.0490933])
+    .setPopup(bikePopup1)
+    .addTo(myMap);
+
+
+
+
+
+           /*viewing area popup markers*/
+
+var eyePopup = new mapboxgl.Popup({ offset: 25 })
+ .setHTML('<h3 style="font-family:Century Gothic; font-style:italic; color:black; text-transform:lowercase;">delta ponds</h3><p><a style="font-family:Century Gothic; font-style:italic; color:black; text-transform:lowercase;" href="https://drive.google.com/file/d/1UZjhd6A-tAqVP7N-su-uepww5TZs2Km7/view?usp=sharing" target="_blank">Viewing Area of Delta Ponds</a></p>');
+
+var eyeElement = document.createElement('div');
+eyeElement.innerHTML = '👀';
+eyeElement.style.fontSize = '25px';
+eyeElement.style.cursor = 'pointer';
+
+
+
+new mapboxgl.Marker(eyeElement)
+    .setLngLat([-123.11145, 44.0753568])
+    .setPopup(eyePopup)
+    .addTo(myMap);
+
+
+    var viewingPopup = new mapboxgl.Popup({ offset: 25 })
+    .setHTML('<h3 style="font-family:Century Gothic; font-style:italic; color:black; text-transform:lowercase;">meadowlark prairie</h3><p><a style="font-family:Century Gothic; font-style:italic; color:black; text-transform:lowercase;" href="https://drive.google.com/file/d/1Kyz6zd1UqRT710xBnard85ebCjo86MPV/view?usp=sharing" target="_blank">Viewing Area of Meadowlark Prairie</a></p>');
+
+var viewingElement = document.createElement('div');
+viewingElement.innerHTML = '👀';
+viewingElement.style.fontSize = '25px';
+viewingElement.style.cursor = 'pointer';
+
+
+new mapboxgl.Marker(viewingElement)
+    .setLngLat([-123.2077988, 44.0644461])
+    .setPopup(viewingPopup)
+    .addTo(myMap);
+
+
+    var singleEyePopup = new mapboxgl.Popup({ offset: 25 })
+   .setHTML('<h3 style="font-family:Century Gothic; font-style:italic; color:black; text-transform:lowercase;">viewing area on the fern ridge path</h3><p><a style="font-family:Century Gothic; font-style:italic; color:black; text-transform:lowercase;" href="https://drive.google.com/file/d/1nmaYT-p4rFDCB-REZohX5EAapL1algzS/view?usp=sharing" target="_blank">Wet Prairie & Open Water/Emergent Marsh</a></p>');
+
+var singleEyeElement = document.createElement('div');
+singleEyeElement.innerHTML = '👀';
+singleEyeElement.style.fontSize = '22px';
+singleEyeElement.style.cursor = 'pointer';
+
+
+new mapboxgl.Marker(singleEyeElement)
+    .setLngLat([-123.2072357, 44.0699434]) // replace with your coordinates
+    .setPopup(singleEyePopup)
+    .addTo(myMap);
+
+
+        var singleEyePopup = new mapboxgl.Popup({ offset: 25 })
+    .setHTML('<h3 style="font-family:Century Gothic; font-style:italic; color:black; text-transform:lowercase;">viewing area on the ruth bascom path</h3><p><a style="font-family:Century Gothic; font-style:italic; color:black; text-transform:lowercase;" href="https://drive.google.com/file/d/1v-NAoX_vN-WeOnUWvZGhrPjFpK40uR_C/view?usp=sharing" target="_blank">Enjoying the river its sounds and the vegetation overhanging it</a></p>');
+
+var singleEyeElement = document.createElement('div');
+singleEyeElement.innerHTML = '👀';
+singleEyeElement.style.fontSize = '22px';
+singleEyeElement.style.cursor = 'pointer';
+
+
+new mapboxgl.Marker(singleEyeElement)
+    .setLngLat([-123.11455, 44.0810878])
+    .setPopup(singleEyePopup)
+    .addTo(myMap);
+
+    var eyePopup = new mapboxgl.Popup({ offset: 25 })
+.setHTML('<h3 style="font-family:Century Gothic; font-style:italic; color:black; text-transform:lowercase;">fresh tree plantings</h3><p><a style="font-family:Century Gothic; font-style:italic; color:black; text-transform:lowercase;" href="https://drive.google.com/file/d/1eJ7Ok9jLZTL3bpBSz6lGqeneS40L-tJU/view?usp=sharing" target="_blank">viewing area of fresh tree plantings</a></p>');
+
+var eyeElement = document.createElement('div');
+eyeElement.innerHTML = '👀';
+eyeElement.style.fontSize = '25px';
+eyeElement.style.cursor = 'pointer';
+eyeElement.style.zIndex = '9999';
+
+new mapboxgl.Marker(eyeElement)
+    .setLngLat([-123.01190, 44.0267711])
+    .setPopup(eyePopup)
+    .addTo(myMap);
+
+    var dorrisRanchPopup = new mapboxgl.Popup({ offset: 25 })
+.setHTML('<h3 style="font-family:Century Gothic; font-style:italic; color:black; text-transform:lowercase;">dorris ranch</h3><p><a style="font-family:Century Gothic; font-style:italic; color:black; text-transform:lowercase;" href="https://drive.google.com/file/d/1zL8rHX8kRd2MlDFZQYbb3jkFafKevcNF/view?usp=sharing" target="_blank">viewing area of dorris ranch</a></p>');
+
+var dorrisRanchElement = document.createElement('div');
+dorrisRanchElement.innerHTML = '👀';
+dorrisRanchElement.style.fontSize = '25px';
+dorrisRanchElement.style.cursor = 'pointer';
+dorrisRanchElement.style.zIndex = '9999';
+
+new mapboxgl.Marker(dorrisRanchElement)
+    .setLngLat([-123.018526, 44.033384])
+    .setPopup(dorrisRanchPopup)
+    .addTo(myMap);
+
+var tallTreePopup = new mapboxgl.Popup({ offset: 25 })
+.setHTML('<h3 style="font-family:Century Gothic; font-style:italic; color:black; text-transform:lowercase;">tall tree and video</h3><p><a style="font-family:Century Gothic; font-style:italic; color:black; text-transform:lowercase;" href="https://drive.google.com/file/d/1w8Ywy6PKly38dY8yrl6dfDSB4_lIVhhB/view?usp=sharing" target="_blank">viewing area of tall tree and video</a></p>');
+
+var tallTreeElement = document.createElement('div');
+tallTreeElement.innerHTML = '👀';
+tallTreeElement.style.fontSize = '25px';
+tallTreeElement.style.cursor = 'pointer';
+tallTreeElement.style.zIndex = '9999';
+
+new mapboxgl.Marker(tallTreeElement)
+    .setLngLat([-123.0019505, 44.0270663])
+    .setPopup(tallTreePopup)
+    .addTo(myMap);
+
+    var willametteViewPopup = new mapboxgl.Popup({ offset: 35 })
+.setHTML('<h3 style="font-family:Century Gothic; font-style:italic; color:black; text-transform:lowercase;">willamette river</h3><p><a style="font-family:Century Gothic; font-style:italic; color:black; text-transform:lowercase;" href="https://drive.google.com/file/d/1nSjl8kxLLvTupA3d6CDUG0MYtsjltVpI/view?usp=sharing" target="_blank">viewing area of willamette river</a></p>');
+
+var willametteViewElement = document.createElement('div');
+willametteViewElement.innerHTML = '👀';
+willametteViewElement.style.fontSize = '25px';
+willametteViewElement.style.cursor = 'pointer';
+
+new mapboxgl.Marker(willametteViewElement)
+    .setLngLat([-122.99985, 44.0279075])
+    .setPopup(willametteViewPopup)
+    .addTo(myMap);
+
+    
+
+
+
+
+
+             /*path navigation buttons*/
+
+document.getElementById('fernridge').addEventListener('click', function () {
+    document.getElementById('title').innerHTML = 'Fern Ridge Path';
+    document.getElementById('subtitle').innerHTML = 'Located in Eugene, Oregon';
+
+   myMap.jumpTo({
+        center: [-123.17, 44.06],
+        zoom: 13,
+        
+    });
+});
+
+document.getElementById('eugene').addEventListener('click', function () {
+    document.getElementById('title').innerHTML = 'Ruth Bascom Path';
+    document.getElementById('subtitle').innerHTML = 'Located in Eugene, Oregon';
+
+   myMap.jumpTo({
+        center: [-123.08, 44.077],
+        zoom: 13,
+        
+    });
+});
+
+document.getElementById('millrace').addEventListener('click', function () {
+    document.getElementById('title').innerHTML = 'Mill Race/Middle Fork Path';
+    document.getElementById('subtitle').innerHTML = 'Located in Springfield, Oregon';
+
+   myMap.jumpTo({
+        center: [-122.99, 44.037],
+        zoom: 14,
+       
+    });
+});
+   
+                   /*legend toggle functionality*/
+document.getElementById('legendToggle').addEventListener('click', function () {
+
+    var content = document.getElementById('legendContent');
+
+    if (content.style.display === 'none') {
+        content.style.display = 'block';
+        this.innerHTML = '⌄';
+    } else {
+        content.style.display = 'none';
+        this.innerHTML = '⌃';
+
+
+
+    }
+    });
+
+             /*map layer popup interactions*/
+myMap.on('click', 'Oak savanna', function(e) {
+
+    if (document.querySelector('.mapboxgl-popup')) return;
+
+    new mapboxgl.Popup()
+        .setLngLat(e.lngLat)
+        .setHTML('<h3>Oak Savanna</h3>')
+        .addTo(myMap);
+});
+
+myMap.on('mouseenter', 'Oak savanna', function() {
+    myMap.getCanvas().style.cursor = 'pointer';
+});
+
+myMap.on('mouseleave', 'Oak savanna', function() {
+    myMap.getCanvas().style.cursor = '';
+});
+
+myMap.on('click', 'Douglas fir', function(e) {
+
+    if (document.querySelector('.mapboxgl-popup')) return;
+
+    new mapboxgl.Popup()
+        .setLngLat(e.lngLat)
+        .setHTML('<h3>Douglas Fir</h3>')
+        .addTo(myMap);
+});
+myMap.on('click', 'Red alder', function(e) {
+
+    if (document.querySelector('.mapboxgl-popup')) return;
+
+    new mapboxgl.Popup()
+        .setLngLat(e.lngLat)
+        .setHTML('<h3>Red Alder</h3>')
+        .addTo(myMap);
+});
+
+myMap.on('mouseenter', 'Red alder', function() {
+    myMap.getCanvas().style.cursor = 'pointer';
+});
+
+myMap.on('mouseleave', 'Red alder', function() {
+    myMap.getCanvas().style.cursor = '';
+});
+
+myMap.on('click', 'Oregon ash', function(e) {
+
+    if (document.querySelector('.mapboxgl-popup')) return;
+
+    new mapboxgl.Popup()
+        .setLngLat(e.lngLat)
+        .setHTML('<h3>Oregon Ash</h3>')
+        .addTo(myMap);
+});
+myMap.on('click', 'Riparian hardwoods', function(e) {
+
+    var features = myMap.queryRenderedFeatures(e.point, {
+        layers: ['Willamette River', 'Delta Ponds', 'Q Street Floodway', 'Canoe Canal']
+    });
+
+    if (features.length > 0) return;
+
+    if (document.querySelector('.mapboxgl-popup')) return;
+
+    new mapboxgl.Popup()
+        .setLngLat(e.lngLat)
+        .setHTML('<h3>Riparian Hardwoods</h3>')
+        .addTo(myMap);
+});
+
+
+
+/*wetland layer popup interactions*/
+
+myMap.on('click', 'Wet prairie', function(e) {
+
+    if (document.querySelector('.mapboxgl-popup')) return;
+
+    new mapboxgl.Popup()
+        .setLngLat(e.lngLat)
+       .setHTML('<h3 style="font-family:Century Gothic; color:saddlebrown;">Wet Prairie</h3>')
+        .addTo(myMap);
+});
+
+myMap.on('mouseenter', 'Wet prairie', function() {
+    myMap.getCanvas().style.cursor = 'pointer';
+});
+
+myMap.on('mouseleave', 'Wet prairie', function() {
+    myMap.getCanvas().style.cursor = '';
+});
+
+myMap.on('click', 'Open water or emergent marsh', function(e) {
+
+    if (document.querySelector('.mapboxgl-popup')) return;
+
+    new mapboxgl.Popup()
+        .setLngLat(e.lngLat)
+       .setHTML('<h3 style="font-family:Century Gothic; color:saddlebrown;">Open Water or Emergent Marsh</h3>')
+        .addTo(myMap);
+});
+
+myMap.on('mouseenter', 'Open water or emergent marsh', function() {
+    myMap.getCanvas().style.cursor = 'pointer';
+});
+
+myMap.on('mouseleave', 'Open water or emergent marsh', function() {
+    myMap.getCanvas().style.cursor = '';
+});
+
+myMap.on('click', 'Pasture old field or wet fill', function(e) {
+
+    if (document.querySelector('.mapboxgl-popup')) return;
+
+    new mapboxgl.Popup()
+        .setLngLat(e.lngLat)
+       .setHTML('<h3 style="font-family:Century Gothic; color:saddlebrown;">Pasture Old Field or Wet Fill</h3>')
+        .addTo(myMap);
+});
+
+myMap.on('mouseenter', 'Pasture old field or wet fill', function() {
+    myMap.getCanvas().style.cursor = 'pointer';
+});
+
+myMap.on('mouseleave', 'Pasture old field or wet fill', function() {
+    myMap.getCanvas().style.cursor = '';
+});
+
+                      /*water body layer popup interactions*/
+myMap.on('click', 'Delta Ponds', function(e) {
+
+    if (document.querySelector('.mapboxgl-popup')) return;
+
+    new mapboxgl.Popup()
+        .setLngLat(e.lngLat)
+        .setHTML('<h3 style="font-family:Bodoni MT; font-style:italic; color:#5f9ea0;">Delta Ponds</h3>')
+        .addTo(myMap);
+});
+
+myMap.on('mouseenter', 'Delta Ponds', function() {
+    myMap.getCanvas().style.cursor = 'pointer';
+});
+
+myMap.on('mouseleave', 'Delta Ponds', function() {
+    myMap.getCanvas().style.cursor = '';
+});
+myMap.on('click', 'Willamette River', function(e) {
+
+    if (document.querySelector('.mapboxgl-popup')) return;
+
+    new mapboxgl.Popup()
+        .setLngLat(e.lngLat)
+        .setHTML('<h3 style="font-family:Bodoni MT; font-style:italic; color:#1565c1;">Willamette River</h3>')
+        .addTo(myMap);
+});
+
+myMap.on('mouseenter', 'Willamette River', function() {
+    myMap.getCanvas().style.cursor = 'pointer';
+});
+
+myMap.on('mouseleave', 'Willamette River', function() {
+    myMap.getCanvas().style.cursor = '';
+});
+myMap.on('click', 'Amazon Creek', function(e) {
+
+    if (document.querySelector('.mapboxgl-popup')) return;
+
+    new mapboxgl.Popup()
+        .setLngLat(e.lngLat)
+       .setHTML('<h3 style="font-family:Bodoni MT; font-style:italic; color:#7fd3ff;">Amazon Creek</h3>')
+        .addTo(myMap);
+});
+
+myMap.on('mouseenter', 'Amazon Creek', function() {
+    myMap.getCanvas().style.cursor = 'pointer';
+});
+
+myMap.on('mouseleave', 'Amazon Creek', function() {
+    myMap.getCanvas().style.cursor = '';
+});
+myMap.on('click', 'Q Street Floodway', function(e) {
+
+    if (document.querySelector('.mapboxgl-popup')) return;
+
+    new mapboxgl.Popup()
+        .setLngLat(e.lngLat)
+        .setHTML('<h3>Q Street Floodway</h3>')
+        .addTo(myMap);
+});
+
+myMap.on('mouseenter', 'Q Street Floodway', function() {
+    myMap.getCanvas().style.cursor = 'pointer';
+});
+
+myMap.on('mouseleave', 'Q Street Floodway', function() {
+    myMap.getCanvas().style.cursor = '';
+});
+myMap.on('click', 'Canoe Canal', function(e) {
+
+    if (document.querySelector('.mapboxgl-popup')) return;
+
+    new mapboxgl.Popup()
+        .setLngLat(e.lngLat)
+        .setHTML('<h3 style="font-family:Bodoni MT; font-style:italic; color:#1565c1;">Canoe Canal</h3>')
+        .addTo(myMap);
+});
+
+myMap.on('mouseenter', 'Canoe Canal', function() {
+    myMap.getCanvas().style.cursor = 'pointer';
+});
+
+myMap.on('mouseleave', 'Canoe Canal', function() {
+    myMap.getCanvas().style.cursor = '';
+});
+   </script>
+  </body>
+
+</html>
