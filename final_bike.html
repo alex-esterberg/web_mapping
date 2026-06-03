@@ -83,10 +83,13 @@
     position: absolute;
     bottom: 30px;
     left: 30px;
-    width: 360px;
+    width: 400px;
+    max-width: 85vw;
+    max-height: 85vh;
+    overflow-y: auto;
     background-color: white;
     color: black;
-    padding: 15px;
+    padding: 8px;
     border-radius: 10px;
     z-index: 99999;
     display: block;
@@ -103,24 +106,21 @@
 }
 
 #legendContent h2 {
-    font-size: 28px;
+    font-size: 24px;
 }
 
 #legendContent p {
-    font-size: 18px;
-    line-height: 1.4;
+    font-size: 15;
+    line-height: 1.3;
 }
 
 .legendItem {
     font-size: 18px;
-    margin-top: 6px;
+    margin-top: 4px;
 }
-    
 
-.legendItem {
-    font-size: 18px;
-    margin-top: 6px;
-}
+
+
                     /*north arrow*/
 #north-arrow {
     position: absolute;
@@ -178,7 +178,7 @@
         <h2>WHAT AM I LOOKING AT?</h2>
 
         <p>
-            This map shows forests, wetlands, ponds and rivers along bike paths in Eugene and Springfield. It is intended to show how beautiful nature is surrounding these paths. There are viewing areas you can see a rangle of animals and hear the sounds of their interaction.
+            This map shows forests, wetlands, ponds and rivers along bike paths in Eugene and Springfield.
         </p>
 
         <div class="legendItem"><span style="color:red;">🚴</span> Bike Paths</div>
